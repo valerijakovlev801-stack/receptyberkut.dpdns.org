@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рецепты Котенка</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f8f8;
+            margin: 0;
+            padding: 20px;
+        }
+        .recipe-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+        .recipe-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .recipe-card h2 {
+            margin: 10px 0 5px;
+            color: #333;
+        }
+        .ingredients {
+            color: #666;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background: #ff5252;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+        <div class="logo">
+            <h1>Рецепты Котенка</h1>
+        </div>
+    <nav class="menu">
+        <a href="index.html">Главная</a>
+        <a href="about.html">Загрузить новый рецепт</a>
+        <a href="contacts.html">Все рецепты</a>
+    </nav>
+    </div>
+</header>
+<div class="filters" id="filters-container">
+    <button class="filter-btn active" data-filter="all">Все</button>
+    <button class="filter-btn" data-filter="Пицца">Пицца</button>
+    <button class="filter-btn" data-filter="Салаты">Салаты</button>
+</div>
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="🔍 Поиск по названию или ингредиентам...">
+</div>
+    <div class="recipes-container" id="recipes-container">
+    </div>
+
+    <!-- Модальное окно для рецепта -->
+    <div class="modal" id="recipeModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <img id="modalImage" src="" alt="">
+            <h2 id="modalTitle"></h2>
+            <span class="modal-category" id="modalCategory"></span>
+            
+            <div class="modal-ingredients">
+                <h3>Ингредиенты:</h3>
+                <ul id="modalIngredients"></ul>
+            </div>
+            
+            <div class="modal-instructions">
+                <h3>Приготовление:</h3>
+                <p id="modalInstructionsText">Здесь будет описание приготовления</p>
+            </div>
+            <div class="modal-actions">
+    <button class="btn edit-btn" id="editRecipeBtn">✏️ Редактировать</button>
+</div>
+        </div>
+    </div>
+<!-- Модальное окно для редактирования -->
+<div class="modal" id="editModal">
+    <div class="modal-content edit-modal-content">
+        <span class="close-btn" id="closeEditModal">&times;</span>
+        <h2 class="form-title">Редактировать рецепт</h2>
+        
+        <div class="message" id="editMessage"></div>
+        
+        <form id="editForm">
+            <div class="form-group">
+                <label for="editName">Название рецепта *</label>
+                <input type="text" id="editName" name="editName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="editCategory">Категория *</label>
+                <select id="editCategory" name="editCategory" required>
+                    <option value="">Выберите категорию</option>
+                    <option value="Пицца">🍕 Пицца</option>
+                    <option value="Салаты">🥗 Салаты</option>
+                    <option value="Супы">🍲 Супы</option>
+                    <option value="Десерты">🍰 Десерты</option>
+                    <option value="Напитки">🥤 Напитки</option>
+                    <option value="new">➕ Создать новую категорию</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="editNewCategoryGroup" style="display: none;">
+                <label for="editNewCategory">Название новой категории *</label>
+                <input type="text" id="editNewCategory" name="editNewCategory" placeholder="Например: Завтраки">
+            </div>
+            
+            <div class="form-group">
+                <label for="editIngredients">Ингредиенты *</label>
+                <textarea id="editIngredients" name="editIngredients" required placeholder="Каждый ингредиент через запятую"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="editInstructions">Способ приготовления</label>
+                <textarea id="editInstructions" name="editInstructions" rows="5"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="editImageFile">Заменить картинку (необязательно)</label>
+                <input type="file" id="editImageFile" name="editImageFile" accept="image/*">
+                <div id="editImagePreview" style="margin-top: 10px;"></div>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn" id="cancelEditBtn">Отмена</button>
+                <button type="submit" class="btn edit-btn">Сохранить изменения</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    // Загружаем рецепты из localStorage
+    const recipes = JSON.parse(localStorage.getItem('recipes')) || [
+        {
+            name: "Маргарита",
+            ingredients: ["Томаты", "Моцарелла", "Базилик"],
+            image: "images/pizza.jpg",
+            category: "Пицца"
+        },
+        {
+            name: "Пепперони",
+            ingredients: ["Томаты", "Моцарелла", "Пепперони"],
+            image: "images/pepperoni.jpg",
+            category: "Пицца"
+        },
+        {
+            name: "Цезарь",
+            ingredients: ["Курица", "Салат", "Пармезан", "Сухарики"],
+            image: "images/meat.jpg",
+            category: "Салаты"
+        }
+    ];
+    
+    // Если localStorage пустой, сохраняем начальные рецепты
+    if (!localStorage.getItem('recipes')) {
+        localStorage.setItem('recipes', JSON.stringify(recipes));
+    }
+    
+    console.log('Загружено рецептов:', recipes.length);
+</script>
+<script src="javascript.js"></script>
+</body>
+</html>

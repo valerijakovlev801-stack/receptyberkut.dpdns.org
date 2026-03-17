@@ -1,0 +1,280 @@
+.recipes-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.recipe-card {
+    margin: 0; /* убираем margin: 0 auto, потому что сетка управляет расположением */
+    max-width: none; /* убираем ограничение ширины */
+}
+
+.header {
+    background: white;
+    padding: 15px 0;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo h1 {
+    color: #ff6b6b;
+    margin: 0;
+    font-size: 24px;
+}
+
+.menu {
+    display: flex;
+    gap: 20px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    padding: 5px 10px;
+    transition: color 0.3s;
+}
+
+.menu a:hover {
+    color: #ff6b6b;
+}
+.recipe-card {
+    margin: 0;
+    max-width: none;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.recipe-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+.filters {
+    max-width: 1200px;
+    margin: 0 auto 20px;
+    padding: 0 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.filter-btn {
+    background: white;
+    border: 2px solid #ff6b6b;
+    color: #ff6b6b;
+    padding: 8px 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.filter-btn:hover {
+    background: #ff6b6b;
+    color: white;
+}
+
+.filter-btn.active {
+    background: #ff6b6b;
+    color: white;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.recipe-card {
+    animation: fadeIn 0.3s ease;
+}
+.no-recipes {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: #666;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.show {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    max-width: 600px;
+    width: 90%;
+    border-radius: 15px;
+    padding: 30px;
+    position: relative;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: #ff6b6b;
+}
+
+.modal img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.modal h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.modal-category {
+    display: inline-block;
+    background: #ff6b6b;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.modal-ingredients {
+    background: #f8f8f8;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.modal-ingredients h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.modal-ingredients ul {
+    list-style: none;
+    padding: 0;
+}
+
+.modal-ingredients li {
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+    color: #666;
+}
+
+.modal-ingredients li:last-child {
+    border-bottom: none;
+}
+
+.modal-instructions {
+    color: #666;
+    line-height: 1.6;
+}
+/* Поиск */
+
+#searchInput {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 50px;
+    outline: none;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+#searchInput:focus {
+    border-color: #ff6b6b;
+    box-shadow: 0 4px 10px rgba(255,107,107,0.1);
+}
+
+#searchInput::placeholder {
+    color: #999;
+}
+.search-container {
+    max-width: 1200px;
+    margin: 0 auto 20px;
+    padding: 0 20px;
+}
+
+#searchInput:focus {
+    border-color: #ff6b6b;
+    box-shadow: 0 4px 10px rgba(255,107,107,0.1);
+}
+
+#searchInput::placeholder {
+    color: #999;
+}
+.modal-actions {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.edit-btn {
+    background: #4CAF50;
+    margin-right: 10px;
+}
+
+.edit-btn:hover {
+    background: #45a049;
+}
+.edit-modal-content {
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+#editForm .form-group {
+    margin-bottom: 15px;
+}
+
+#editForm textarea {
+    height: 80px;
+}

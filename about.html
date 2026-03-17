@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузить рецепт | Рецепты Котенка</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .form-title {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+        
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: #ff5252;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .ingredients-hint {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <h1>Рецепты Котенка</h1>
+            </div>
+            <nav class="menu">
+                <a href="index.html">Главная</a>
+                <a href="about.html" class="active">Загрузить новый рецепт</a>
+                <a href="contacts.html">Все рецепты</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="form-container">
+        <h2 class="form-title">Добавить новый рецепт</h2>
+        
+        <div class="message" id="message"></div>
+        
+        <form id="recipeForm">
+            <div class="form-group">
+                <label for="name">Название рецепта *</label>
+                <input type="text" id="name" name="name" required placeholder="Например: Маргарита">
+            </div>
+            
+            <div class="form-group">
+                <label for="category">Категория *</label>
+                <select id="category" name="category" required>
+                    <option value="">Выберите категорию</option>
+                    <option value="Пицца">🍕 Пицца</option>
+                    <option value="Салаты">🥗 Салаты</option>
+                    <option value="Супы">🍲 Супы</option>
+                    <option value="Десерты">🍰 Десерты</option>
+                    <option value="Напитки">🥤 Напитки</option>
+                    <option value="new">➕ Создать новую категорию</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="newCategoryGroup" style="display: none;">
+                <label for="newCategory">Название новой категории *</label>
+                <input type="text" id="newCategory" name="newCategory" placeholder="Например: Завтраки">
+            </div>
+            
+            <div class="form-group">
+                <label for="ingredients">Ингредиенты *</label>
+                <textarea id="ingredients" name="ingredients" required placeholder="Например: Томаты, Моцарелла, Базилик (каждый ингредиент через запятую)"></textarea>
+                <div class="ingredients-hint">Введи рецепт через запятую</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="instructions">Способ приготовления</label>
+                <textarea id="instructions" name="instructions" rows="5" placeholder="Опишите пошагово, как готовить это блюдо..."></textarea>
+                <div class="ingredients-hint">Напишите подробную инструкцию</div>
+            </div>
+            
+            <div class="form-group">
+    <label for="imageFile">Загрузите картинку</label>
+    <input type="file" id="imageFile" name="imageFile" accept="image/*">
+    <div class="ingredients-hint">Выберите фото с компьютера (до 5 МБ)</div>
+    <div id="imagePreview" style="margin-top: 10px;"></div>
+</div>
+            
+            <button type="submit" class="submit-btn">Добавить рецепт</button>
+        </form>
+    </div>
+
+   <script>
+    // Функция для показа сообщений
+    function showMessage(text, type) {
+        const messageDiv = document.getElementById('message');
+        messageDiv.textContent = text;
+        messageDiv.className = 'message ' + type;
+        messageDiv.style.display = 'block';
+        
+        setTimeout(() => {
+            messageDiv.style.display = 'none';
+        }, 3000);
+    }
+    
+    // Показывать/скрывать поле для новой категории
+    const categorySelect = document.getElementById('category');
+    const newCategoryGroup = document.getElementById('newCategoryGroup');
+    const newCategoryInput = document.getElementById('newCategory');
+    
+    categorySelect.addEventListener('change', function() {
+        if (this.value === 'new') {
+            newCategoryGroup.style.display = 'block';
+            newCategoryInput.required = true;
+        } else {
+            newCategoryGroup.style.display = 'none';
+            newCategoryInput.required = false;
+            newCategoryInput.value = '';
+        }
+    });
+    
+    // Показ превью картинки
+    document.getElementById('imageFile').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = `<img src="${event.target.result}" style="max-width: 200px; max-height: 150px; border-radius: 8px;">`;
+        };
+        reader.readAsDataURL(file);
+    });
+    
+    // Отправка формы
+    document.getElementById('recipeForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('name').value.trim();
+        let category = document.getElementById('category').value;
+        const ingredientsText = document.getElementById('ingredients').value.trim();
+        const instructions = document.getElementById('instructions').value.trim() || 'Способ приготовления не указан';
+        const imageFile = document.getElementById('imageFile').files[0];
+        
+        // Если выбрана новая категория
+        if (category === 'new') {
+            category = newCategoryInput.value.trim();
+            if (!category) {
+                showMessage('Введите название новой категории!', 'error');
+                return;
+            }
+        }
+        
+        if (!name || !category || !ingredientsText) {
+            showMessage('Заполните все обязательные поля!', 'error');
+            return;
+        }
+        
+        const ingredients = ingredientsText.split(',').map(i => i.trim());
+        
+        // Создаём FormData для отправки файла
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('category', category);
+        formData.append('ingredients', JSON.stringify(ingredients));
+        formData.append('instructions', instructions);
+        
+        if (imageFile) {
+            formData.append('image', imageFile);
+        }
+        
+        try {
+            const response = await fetch('http://localhost:3000/api/recipes', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!response.ok) {
+                throw new Error('Ошибка при сохранении');
+            }
+            
+            const newRecipe = await response.json();
+            
+            showMessage('Рецепт успешно добавлен!', 'success');
+            this.reset();
+            document.getElementById('imagePreview').innerHTML = '';
+            newCategoryGroup.style.display = 'none';
+            newCategoryInput.required = false;
+            
+            console.log('Добавлен новый рецепт:', newRecipe);
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showMessage('Ошибка при сохранении рецепта', 'error');
+        }
+    });
+</script>
+</body>
+</html>
